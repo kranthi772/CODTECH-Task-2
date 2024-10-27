@@ -1,0 +1,196 @@
+/* This the code for Weather Dashboard to show the climate in various places */
+
+
+/* This is HTML code */
+
+<!DOCTYPE html>
+
+<head>
+	<link rel="stylesheet" href="style2.css">
+	<link rel="stylesheet" href=
+"https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+	<link rel="stylesheet" href=
+"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href=
+"https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+	<title>GFG App</title>
+</head>
+
+<body>
+	<div class="container">
+		<div class="weather-card">
+			<h1 style="color: green;">
+				Weather Dashbord
+			</h1>
+			<h3>
+				Weather App
+			</h3>
+			<input type="text" id="city-input"
+				placeholder="Enter city name">
+			<button id="city-input-btn"
+					onclick="weatherFn($('#city-input').val())">
+					Get Weather
+			</button>
+			<div id="weather-info"
+				class="animate__animated animate__fadeIn">
+				<h3 id="city-name"></h3>
+				<p id="date"></p>
+                <i class="bi bi-cloud-sun"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cloud-sun" viewBox="0 0 16 16">
+                    <path d="M7 8a3.5 3.5 0 0 1 3.5 3.555.5.5 0 0 0 .624.492A1.503 1.503 0 0 1 13 13.5a1.5 1.5 0 0 1-1.5 1.5H3a2 2 0 1 1 .1-3.998.5.5 0 0 0 .51-.375A3.5 3.5 0 0 1 7 8m4.473 3a4.5 4.5 0 0 0-8.72-.99A3 3 0 0 0 3 16h8.5a2.5 2.5 0 0 0 0-5z"/>
+                    <path d="M10.5 1.5a.5.5 0 0 0-1 0v1a.5.5 0 0 0 1 0zm3.743 1.964a.5.5 0 1 0-.707-.707l-.708.707a.5.5 0 0 0 .708.708zm-7.779-.707a.5.5 0 0 0-.707.707l.707.708a.5.5 0 1 0 .708-.708zm1.734 3.374a2 2 0 1 1 3.296 2.198q.3.423.516.898a3 3 0 1 0-4.84-3.225q.529.017 1.028.129m4.484 4.074c.6.215 1.125.59 1.522 1.072a.5.5 0 0 0 .039-.742l-.707-.707a.5.5 0 0 0-.854.377M14.5 6.5a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"/>
+                  </svg>
+				<p id="temperature"></p>
+				<p id="description"></p>
+				<p id="wind-speed"></p>
+			</div>
+		</div>
+	</div>
+	<script src=
+"https://code.jquery.com/jquery-3.6.0.min.js">
+	</script>
+	<script src=
+"https://momentjs.com/downloads/moment.min.js">
+	</script>
+	<script src="script.js"></script>
+</body>
+
+</html>
+
+
+
+
+/* This is CSS */
+
+
+body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to right, #4cafa3, #2196F3);
+}
+
+.container {
+    text-align: center;
+}
+
+.weather-card {
+    background-color: rgba(206, 222, 32, 0.95);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    width: 450px;
+}
+
+.weather-card:hover {
+    transform: scale(1.05);
+}
+
+#city-input {
+    padding: 15px;
+    margin: 10px 0;
+    width: 70%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#city-input:focus {
+    outline: none;
+    border-color: #2196F3;
+}
+
+#city-input::placeholder {
+    color: #aaa;
+}
+
+#city-input-btn {
+    padding: 10px;
+    background-color: #2196F3;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#city-input-btn:hover {
+    background-color: #1565C0;
+}
+
+#weather-info {
+    display: none;
+}
+
+#temperature {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+#description {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+#wind-speed {
+    font-size: 16px;
+    color: rgb(255, 0, 0);
+}
+
+#date {
+    font-size: 14px;
+    color: rgb(255, 0, 0);
+}
+
+
+
+/* This is the Js code */
+
+
+
+const url =
+	'https://api.openweathermap.org/data/2.5/weather';
+const apiKey =
+	'f00c38e0279b7bc85480c3fe775d518c';
+
+$(document).ready(function () {
+	weatherFn('Pune');
+});
+
+async function weatherFn(cName) {
+	const temp =
+		`${url}?q=${cName}&appid=${apiKey}&units=metric`;
+	try {
+		const res = await fetch(temp);
+		const data = await res.json();
+		if (res.ok) {
+			weatherShowFn(data);
+		} else {
+			alert('City not found. Please try again.');
+		}
+	} catch (error) {
+		console.error('Error fetching weather data:', error);
+	}
+}
+
+function weatherShowFn(data) {
+	$('#city-name').text(data.name);
+	$('#date').text(moment().
+		format('MMMM Do YYYY, h:mm:ss a'));
+	$('#temperature').
+		html(`${data.main.temp}°C`);
+	$('#description').
+		text(data.weather[0].description);
+	$('#wind-speed').
+		html(`Wind Speed: ${data.wind.speed} m/s`);
+	$('#weather-icon').
+		attr('src',
+			`...`);
+	$('#weather-info').fadeIn();
+}
+
